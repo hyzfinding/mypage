@@ -35,9 +35,11 @@ export default {
 <style>
 .bg{
   width: 100%;
-  min-width: 1000px;
-  height: 0;
-  padding-top: 60%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;

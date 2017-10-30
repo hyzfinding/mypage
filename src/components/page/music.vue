@@ -1,38 +1,38 @@
 <template>
   <div id="music">
-    <audio src=""></audio>
+    <audio src="" preload></audio>
     <div class="cover_bg"></div>
-    <div class="album_cover">
-    	<img src="/static/csbg.jpg">
+    <div class="album_cover" v-show="isMobile">
+    	<img src="../../../static/img/csbg.jpg">
     </div>
-    <div class="music_plate_container">
-    	<div class="music_plate_wrapper">
-    		<div class="music_plate">正在播放</div>
-    		<div class="music_plate">我的收藏</div>
-    		<div class="music_plate">排行榜</div>
-    		<div class="music_plate">搜索</div>
+    <div :class="isMobile?music_plate_container:mobile_music_plate_container">
+    	<div :class="isMobile?music_plate_wrapper:mobile_music_plate_wrapper">
+    		<div :class="isMobile?music_plate:mobile_music_plate">正在播放</div>
+    		<div :class="isMobile?music_plate:mobile_music_plate">我的收藏</div>
+    		<div :class="isMobile?music_plate:mobile_music_plate">排行榜</div>
+    		<div :class="isMobile?music_plate:mobile_music_plate">搜索</div>
     	</div>
     </div>
-    <div class="music_list_wrapper">
+    <div class="music_list_wrapper" :class="isMobile?pc_music_list_wrapper:mobile_music_list_wrapper">
     	<div class="music_list_title">
-    		<div class="music_name">歌曲</div>
-    		<div class='music_singer'>歌手</div>
-    		<div class="music_album">专辑</div>
+    		<div :class="isMobile?music_name:mobile_music_name">歌曲</div>
+    		<div :class='isMobile?music_singer:mobile_music_singer'>歌手</div>
+    		<div class="music_album" v-show="isMobile">专辑</div>
     		<div class="music_time">时长</div>
     	</div>
     	<div class="music_list" v-for="musicInfo in musicInfos" >
-    		<div class="music_name"><span class="wave"></span><span class="index">{{musicInfo.id}}</span>{{musicInfo.musicName}}</div>
-    		<div class='music_singer'>{{musicInfo.singerName}}</div>
-    		<div class="music_album">专辑</div>
+    		<div :class="isMobile?music_name:mobile_music_name"><span class="wave"></span><span class="index">{{musicInfo.id}}</span>{{musicInfo.musicName}}</div>
+    		<div :class='isMobile?music_singer:mobile_music_singer'>{{musicInfo.singerName}}</div>
+    		<div class="music_album" v-show="isMobile">专辑</div>
     		<div class="music_time">{{musicInfo.totalTime}}</div>
     		<div class="selectMusic" @click.self="chooseMusic($event)">{{musicInfo.musicUrl}}</div><div class="notShow">{{musicInfo.id}}</div>
     		
     	</div>
     </div>
-    <div class="music_control_wrapper">
-       <div class="music_control_button">
+    <div :class="isMobile?music_control_wrapper:mobile_music_control_wrapper">
+       <div :class="isMobile?music_control_button:mobile_music_control_button">
          <div class="music_last">
-         	<i class="icon iconfont icon-xiayiqu101"></i>
+         	 <i class="icon iconfont icon-xiayiqu101"></i>
          </div>
          <div class="music_switch">
            <i class="icon iconfont icon-yinlebofangxianxing" @click="startMusic" v-if="musicState=='pause'"></i>
@@ -42,12 +42,12 @@
          	<i class="icon iconfont icon-xiayiqu"></i>
          </div>
        </div>
-       <div class="music_progress_control">
-       	<div class="music_progress_title">
-       		<div class="music_name">
+       <div :class="isMobile?music_progress_control:mobile_music_progress_control">
+       	<div :class="isMobile?music_progress_title:mobile_music_progress_title">
+       		<div class="control_music_name">
        			{{musicName?musicName:'阳光明媚的早晨我迟到了'}}
        		</div>
-       		<div class="music_time">
+       		<div class="control_music_time">
        			<span class="music_current_time" v-model="currentTime">{{currentTime}}</span>
        			<span class='music_total_time'>/{{defaultTotalTime}}</span>
        		</div>
@@ -66,18 +66,27 @@
 </template>
 
 <script>
+ import suitScreenApi from "../../assets/js/suitScreen.js"
  export default {
   name: 'music',
   data(){
   	return {
   		musicInfos:[
-  			{musicName:'Counting Stars',musicUrl:'/static/Counting Stars.mp3',singerName:'OneRepublic',totalTime:'4.28',id:1,coverImg:'/static/csbg.jpg'},
-  			{musicName:'Animals',musicUrl:'/static/Animals.mp3',singerName:'Nickelback',totalTime:'5.28',id:2,coverImg:'/static/animalsbg.jpg'},
-  			{musicName:'好想你',musicUrl:'/static/miss you.mp3',singerName:'李雪莱',totalTime:'5.12',id:3,coverImg:'/static/miss you.jpg'},
-  			{musicName:'琵琶语',musicUrl:'/static/pipayu.mp3',singerName:'林海',totalTime:'5.12',id:4,coverImg:'/static/miss you.jpg'}
+  			{musicName:'Counting Stars',musicUrl:'/static/media/Counting Stars.mp3',singerName:'OneRepublic',totalTime:'4.28',id:1,coverImg:'/static/img/csbg.jpg'},
+  			{musicName:'Animals',musicUrl:'/static/media/Animals.mp3',singerName:'Nickelback',totalTime:'5.28',id:2,coverImg:'/static//img/animalsbg.jpg'},
+  			{musicName:'好想你',musicUrl:'/static/media/miss you.mp3',singerName:'李雪莱',totalTime:'5.12',id:3,coverImg:'/static/img/miss you.jpg'},
+  			{musicName:'琵琶语',musicUrl:'/static/media/pipayu.mp3',singerName:'林海',totalTime:'5.12',id:4,coverImg:'/static/img/miss you.jpg'}
   			,
-  			{musicName:'我俩永隔一江水',musicUrl:'/static/river.mp3',singerName:'小娟&山谷里的居民',totalTime:'3.42',id:5,coverImg:'/static/river.jpg'}
+  			{musicName:'我俩永隔一江水',musicUrl:'/static/media/river.mp3',singerName:'小娟&山谷里的居民',totalTime:'3.42',id:5,coverImg:'/static/img/river.jpg'}
   		],
+      // musicInfos:[
+      //   {musicName:'Counting Stars',musicUrl:'http://m10.music.126.net/20171030163413/2c529f67e921a417ca29201f63337bc5/ymusic/4a1b/6562/fc11/ca66b35ac15955116bfe6be599289144.mp3',singerName:'OneRepublic',totalTime:'4.28',id:1,coverImg:'https://thumbnail0.baidupcs.com/thumbnail/6754aadd73e8bfa9f69c251fd785c20f?fid=505128395-250528-605420445092583&time=1509076800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-JRkQ%2F1thob%2F51tQyVO%2F2tL8u%2B3g%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=6946263756682162831&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video.jpg'},
+      //   {musicName:'Animals',musicUrl:'http://m10.music.126.net/20171030163500/9fc17c3ee3b6c4bf17cbd8c0a0238da7/ymusic/ddf3/5076/8eed/43a79d9cd4dbe88adf64eaf1d1da7811.mp3',singerName:'Nickelback',totalTime:'5.28',id:2,coverImg:'https://thumbnail0.baidupcs.com/thumbnail/a8f0a550bb4984624ff36b9626461d33?fid=505128395-250528-849447867769379&time=1509076800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-Uiqj80O3xJ42QtZxEWfrYRVCxyA%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=6946282168408957846&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video'},
+      //   {musicName:'好想你',musicUrl:'http://m10.music.126.net/20171030162952/386f571856416ef78675c2325b21d214/ymusic/b64a/e538/f255/f893513fd39c0aef2e641e88241bf2dc.mp3',singerName:'李雪莱',totalTime:'5.12',id:3,coverImg:'https://thumbnail0.baidupcs.com/thumbnail/b46e54e100c148665f4c800e23577c47?fid=505128395-250528-1035482153625976&time=1509076800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-Y7qYC%2FtXCilFpQj9gGtEuNxTadM%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=6946289642402050837&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video'},
+      //   {musicName:'琵琶语',musicUrl:'../../../static/pipayu.mp3',singerName:'林海',totalTime:'5.12',id:4,coverImg:'https://thumbnail0.baidupcs.com/thumbnail/e12efe325b02d9030a373790409f7c0e?fid=505128395-250528-941056053593675&time=1509076800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-BK370RW2T8y9zZk4N%2BUAa8nRzVw%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=6946303288827089836&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video'}
+      //   ,
+      //   {musicName:'我俩永隔一江水',musicUrl:'http://m10.music.126.net/20171030163237/b42611a4a59ae76306b8e43eda300cd5/ymusic/8db3/521a/3d3d/10c8f2f2823496c8d3d521bc2ed6d82c.mp3',singerName:'小娟&山谷里的居民',totalTime:'3.42',id:5,coverImg:'https://thumbnail0.baidupcs.com/thumbnail/eaef9fe17c92b6eac8980b93d66eaad3?fid=505128395-250528-963721606429900&time=1509076800&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-J961axaVLkhsxCStrHP64iS1w6c%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=6946925105720378409&dp-callid=0&size=c710_u400&quality=100&vuk=-&ft=video'}
+      // ],
   		lastSelectdMusicId:0,
   		selectdMusicId:0,
   		musicName:'',
@@ -86,11 +95,33 @@
   		defaultTotalTime:'0.0',
   		currentTime:'0.0',
   		width:0,
-  		interval:''
+  		interval:'',
+      isMobile:null,
+      //样式相关
+      music_control_wrapper:'music_control_wrapper',
+      mobile_music_control_wrapper:'mobile_music_control_wrapper',
+      music_plate_container:'music_plate_container',
+      mobile_music_plate_container:'mobile_music_plate_container',
+      music_plate_wrapper:'music_plate_wrapper',
+      mobile_music_plate_wrapper:'mobile_music_plate_wrapper',
+      music_plate:'music_plate',
+      mobile_music_plate:'mobile_music_plate',
+      pc_music_list_wrapper:'pc_music_list_wrapper',
+      mobile_music_list_wrapper:'mobile_music_list_wrapper',
+      music_name:'music_name',
+      mobile_music_name:'mobile_music_name',
+      music_singer:'music_singer',
+      mobile_music_singer:'mobile_music_singer',
+      music_control_button:'music_control_button',
+      mobile_music_control_button:'mobile_music_control_button',
+      music_progress_control:'music_progress_control',
+      mobile_music_progress_control:'mobile_music_progress_control',
+      music_progress_title:'music_progress_title',
+      mobile_music_progress_title:'mobile_music_progress_title'
   	}
   },
-  components:{
-  	
+  created:function(){
+    this.isMobile = suitScreenApi.isMobile();
   },
   methods:{
     startMusic:function(){
@@ -202,6 +233,13 @@
 	width: 80%;
 	height: 10rem;
 }
+.mobile_music_control_wrapper{
+  position: absolute;
+  bottom: 2rem;
+  left: 3%;
+  width: 94%;
+  height: 24%;
+}
 .music_last,
 .music_next,
 .music_switch{
@@ -215,7 +253,8 @@
 }
 .music_switch i{
 	font-size: 5rem;
-	line-height: 10rem
+	line-height: 10rem;
+  padding-left: 2rem;
 }
 .music_last i,
 .music_next i{
@@ -236,6 +275,13 @@
 	width: 70%;
 	height: 100%;
 	margin-left: 2rem;
+}
+.mobile_music_progress_control{
+  position: absolute;
+  width: 90%;
+  height: 36%;
+  bottom: 0;
+  left: 5%;
 }
 .music_progress_bar{
 	width: 100%;
@@ -305,6 +351,9 @@
 	font-size: 1.6rem;
 	color: hsla(0,0%,88%,.8);
 }
+.mobile_music_progress_title{
+  width: 100%;
+}
 .music_name{
 	float: left;
 }
@@ -317,10 +366,20 @@
   top: 10%;
   left: 3%;
 }
+.mobile_music_plate_container{
+  width: 96%;
+  position: absolute;
+  top: 10%;
+  left: 4%;
+}
 .music_plate_wrapper{
 	width: 100%;
 	display: table;
 	padding: 1rem;
+}
+.mobile_music_plate_wrapper{
+  width: 100%;
+  display: table;
 }
 .music_plate{
 	float: left;
@@ -334,19 +393,40 @@
 	font-size: 1.4rem;
 	color: hsla(0,0%,88%,.8);
 }
+.mobile_music_plate{
+  float: left;
+  width: 22%;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+  border:1px solid hsla(0,0%,100%,.3);
+  border-radius: .2rem;
+  margin-right: .5rem;
+  font-size: 1.4rem;
+  color: hsla(0,0%,88%,.8);
+}
 .music_plate:hover{
 	border-color: #fff;
 	cursor: pointer;
 }
 .music_list_wrapper{
-	width: 70%;
-	height: 50%;
 	position: absolute;
-	top: 24%;
+	
 	left: 3%;
 	color: hsla(0,0%,88%,.8);
 	font-size: 1.4rem;
-	overflow-y:auto; 
+	overflow-y:auto;
+  overflow-x:hidden;  
+}
+.pc_music_list_wrapper{
+  width: 70%;
+  height: 50%;
+  top: 24%;
+}
+.mobile_music_list_wrapper{
+  width: 97%;
+  height: 53%;
+  top: 18%;
 }
 .music_list_title,
 .music_list{
@@ -369,6 +449,22 @@
 	padding-left: 3rem;
 	position: relative;
 }
+.mobile_music_name{
+  width: 40%;
+  padding-left: 3rem;
+  position: relative;
+}
+.control_music_name{
+  width: 70%;
+  float: left;
+  font-size: 1.4rem;
+}
+.control_music_time{
+  width: 28%;
+  float: right;
+  font-size: 1.4rem;
+  text-align:right;
+}
 .wave,
 .index{
 	position: absolute;
@@ -378,18 +474,29 @@
 	text-align: center;	
 }
 .wave{
-	background: url('/static/wave.gif') no-repeat center;
+	background: url('../../../static/wave.gif') no-repeat center;
 	display: none;
 }
 .music_singer{
     width: 23%;
 }
+.mobile_music_singer{
+  width: 40%;
+}
 .music_album,
 .music_time{
 	width: 10%;
 }
+.mobile_music_control_button{
+  width: 74%;
+  margin: 0 auto;
+}
+.mobile_music_control_button>div{
+  width: 33%;
+  text-align: center;
+}
 .cover_bg{
-	background: url('/static/csbg.jpg') no-repeat center;
+	background: url('../../../static/img/csbg.jpg') no-repeat center;
 	background-size: cover;
 	width: 100%;
 	height: 100%; 
@@ -417,7 +524,7 @@
 	height: 94%;
 	position: absolute;
 	right: -1.4rem;
-	background: url('/static/cd_block.png') no-repeat right center;
+	background: url('../../../static/cd_block.png') no-repeat right center;
 	background-size: cover;
 }
 .album_cover img{
@@ -434,6 +541,7 @@
 .notShow{
 	display: none;
 }
+
 ::-webkit-scrollbar {  
   width: 14px;  
   height: 14px;  

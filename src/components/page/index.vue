@@ -1,19 +1,19 @@
 <template>
-  <div id="index">
+  <div id="index" :class="isMobile?bigTop:smallTop">
     <div class="content_wrapper">
     	<div class="content_top">
     		<div class="content_title">
-    			<span>“巨大的天然动物园”</span>
+    			<span>“景如其名，美不胜收”</span>
     		</div>
     		<div class="content_time">
-    			<span>2017.10.24</span>
+    			<span>2017.10.30</span>
     		</div>
     	</div>
     	<div class="cotent_text">
-    		<span>尽管有很多观点表明，在吉婆岛的吉婆镇多多少少有一些人类活动，但大多数生物多样性的天堂仍未得到开发。岛上的三分之一，以及海湾的一部分被保留成为吉婆国家公园。吉婆岛包含了各种各样的环境，从红树林沼泽到岩溶悬崖。这些悬崖是岛上很少见到的，同时这也是濒临绝种的灵长类动物，金头叶猴的家园。</span>
+    		<span>这张照片是在优胜美地国家公园的灵感点附近拍摄的，在那里，探险家们可以在小径上发现各种有趣的场景。在优胜美地国家公园，有许多景观可以在灵感点观赏到。该地区是伊尔酋长岩和半圆顶这样的标志性岩层的所在地，它以丰富的瀑布而闻名。这里曾经生活着许多当地土著，也算是个保存完整的古迹了！。</span>
     	</div>
-    	<div class="content_tips">
-    	  <div class="full_page_wrapper">
+    	<div :class="[content_tips,isMobile?big_bottom:small_bottom]">
+    	  <div class="full_page_wrapper" v-if="this.isMobile">
     	  	<div class="full_page_border">
     	  		<i v-if="isFull" class="icon iconfont icon-quanping" @click="requestFullScreen" title="全屏显示"></i>
     	  		<i v-else class="icon iconfont icon-tuichuquanping" @click="exitFullscreen" title="退出全屏"></i>
@@ -30,14 +30,24 @@
 </template>
 
 <script>
+import suitScreenApi from "../../assets/js/suitScreen.js"
 export default {
   name: 'index',
   data(){
   	return {
-  		'isFull':1
+  		'isFull':1,
+      isMobile:null,
+      bigTop:'bigTop',
+      smallTop:'smallTop',
+      big_bottom:'big_bottom',
+      small_bottom:'small_bottom',
+      content_tips:'content_tips'
+
   	}
   },
-
+  created:function(){
+    this.isMobile = suitScreenApi.isMobile();
+  },
   methods:{
   	//全屏效果
   	requestFullScreen: function() {
@@ -67,14 +77,20 @@ export default {
 </script>
 
 <style>
+/*@import '/static/css/iconfont.css'*/
 #index{
 	position: fixed;
 	height: 60%;
-	top: 40%;
 	left: 5%;
 	/*transition: all 1.6s;*/
 	width: 90%;
 	color: #fff;
+}
+.bigTop{
+   top:40%;
+}
+.smallTop{
+  top: 24%;
 }
 .content_top{
 	width: 100%;
@@ -98,13 +114,20 @@ export default {
 	line-height: 3rem;
 	padding-top: 5rem;
 	font-size: 1.4rem;
+  text-indent: 3rem;
 }
 .content_tips{
 	width: 100%;
 	height: 4rem;
 	line-height: 4rem;
 	position: absolute;
-    bottom: 5.4rem;
+  
+}
+.big_bottom{
+  bottom: 5.4rem;
+}
+.small_bottom{
+  bottom: -8rem;
 }
 .tips{
 	float: right;
